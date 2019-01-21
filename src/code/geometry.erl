@@ -2,4 +2,9 @@
 -export([area/1]).
 
 area({rectangle, Width, Ht}) -> Width * Ht;
-area({circle, R}) -> 3.14159 * R * R.
+area({circle, R}) -> 3.14159 * R * R;
+area({square, X}) -> X * X.
+
+
+% c(geometry).
+% geometry:area({rectangle, 10, 5}). // 50
