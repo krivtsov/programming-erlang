@@ -1,5 +1,6 @@
 -module(lib_misc).
--export([sum/1, qsort/1, pythag/1, perms/1, odds_and_evens/1, odds_and_evens_acc/1]).
+-export([sum/1, qsort/1, pythag/1, perms/1, odds_and_evens/1, odds_and_evens_acc/1, sleep/1, priority_receive/0,
+          flush_buffer/0, on_exit/2]).
 
 sum(L) -> sum(L, 0).
 
@@ -52,3 +53,38 @@ end;
 odds_and_evens_acc([], Odds, Evens) ->
   {lists:reverse(Odds), lists:reverse(Evens)}.
   
+
+sleep(T) ->
+  receive
+    after T ->
+      true
+  end.
+
+flush_buffer() ->
+  receive
+    _Any -> 
+      flush_buffer()
+    after 0 ->
+      true
+    end.
+
+priority_receive() ->
+  receive
+    {alarm, X} ->
+      {alarm, X}
+    after 0 ->
+      receive
+        Any -> 
+          Any
+      end
+    end.
+
+on_exit(Pid, Fun) ->
+  spawn(fun() ->
+    process_flag(trap_exit, true),
+    link(Pid),
+    receive
+      {'EXIT', Pid, Why} ->
+        Fun(Why)
+      end
+    end).
