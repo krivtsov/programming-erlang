@@ -1,6 +1,10 @@
 -module(lib_misc).
 -export([sum/1, qsort/1, pythag/1, perms/1, odds_and_evens/1, odds_and_evens_acc/1, sleep/1, priority_receive/0,
-          flush_buffer/0, on_exit/2, unconsult/2]).
+          flush_buffer/0, on_exit/2, unconsult/2, ls/1]).
+
+-import(lists, [map/2,sort/1]).
+
+-include_lib("kernel/include/file.hrl").
 
 sum(L) -> sum(L, 0).
 
@@ -93,3 +97,17 @@ unconsult(File, L) ->
   {ok, S} = file:open(File, write),
   lists:foreach(fun(X) -> io:format(S, "\~p.\~n", [X]) end, L),
   file:close(S).
+
+file_size_and_type(File) ->
+  case file:read_file_info(File) of
+    {ok, Facts} ->
+      {Facts#file_info.type, Facts#file_info.size};
+    _ ->
+      error
+  end.
+
+ls(Dir) ->
+  {ok, L} = file:list_dir(Dir),
+  map(fun(I) -> {I, file_size_and_type(I)} end, sort(L)).
+
+
