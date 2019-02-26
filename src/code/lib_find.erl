@@ -4,8 +4,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
-files(Dir, Re, Flag) ->
-  %Re1 = re:compile(Re),
+files(Dir, Re, Flag) ->  
   Re1 = xmerl_regexp:sh_to_awk(Re),
   reverse(files(Dir, Re1, Flag, fun(File, Acc) -> [File|Acc] end, [])).
 
