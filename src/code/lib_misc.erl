@@ -1,6 +1,6 @@
 -module(lib_misc).
 -export([sum/1, qsort/1, pythag/1, perms/1, odds_and_evens/1, odds_and_evens_acc/1, sleep/1, priority_receive/0,
-          flush_buffer/0, on_exit/2, unconsult/2, ls/1]).
+          flush_buffer/0, on_exit/2, unconsult/2, ls/1, string2value/1]).
 
 -import(lists, [map/2,sort/1]).
 
@@ -110,4 +110,10 @@ ls(Dir) ->
   {ok, L} = file:list_dir(Dir),
   map(fun(I) -> {I, file_size_and_type(I)} end, sort(L)).
 
+string2value(Str) ->
+    {ok, Tokens, _} = erl_scan:string(Str ++ "."),
+    {ok, Exprs} = erl_parse:parse_exprs(Tokens),
+    Bindings = erl_eval:new_bindings(),
+    {value, Value, _} = erl_eval:exprs(Exprs, Bindings),
+    Value.
 
