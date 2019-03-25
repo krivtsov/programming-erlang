@@ -11,7 +11,7 @@ start_link() ->
    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 area(Thing) ->
-  gen_server:call(?MODULE, {prime, Thing}).
+  gen_server:call(?MODULE, {area, Thing}).
 
 init([]) ->
   process_flag(trap_exit, true),
@@ -34,11 +34,4 @@ code_change(_OldVsn, N, _Extra) -> {ok, N}.
 compute_area({square, X}) -> X * X;
 
 compute_area({rectangle, X, Y}) -> X * Y.
-
-
-
-
-
-
-
 
